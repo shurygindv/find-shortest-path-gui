@@ -2,20 +2,13 @@ package main
 
 import (
 	"bufio"
-	"log"
-	"os"
+	"io"
 )
 
 const LinesCount int = 18
 
-func importFilePoints() []string {
-	f, err := os.OpenFile("data.txt", os.O_RDONLY, os.ModePerm)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	scanner := bufio.NewScanner(f)
+func import_file_points_stream(r io.Reader) []string {
+	scanner := bufio.NewScanner(r)
 	lines := make([]string, 0, LinesCount)
 
 	for scanner.Scan() {
@@ -23,8 +16,6 @@ func importFilePoints() []string {
 
 		lines = append(lines, line)
 	}
-
-	f.Close()
 
 	return lines
 }
