@@ -3,18 +3,9 @@ package main
 import (
 	"fmt"
 	"log"
+	"math"
 	"strconv"
 )
-
-func find[T any](array []T, fn func(T) bool) T {
-	for _, v := range array {
-		if fn(v) {
-			return v
-		}
-	}
-
-	return *new(T)
-}
 
 func build_nodes(nodeCount int, fileNodeLines []string) (nodes []Node) {
 	nodes = make([]Node, nodeCount)
@@ -28,7 +19,7 @@ func build_nodes(nodeCount int, fileNodeLines []string) (nodes []Node) {
 			log.Fatal(err)
 		}
 
-		nodes[i] = Node{index, x, y}
+		nodes[i] = Node{index, x, y, false, math.Inf(0)}
 	}
 
 	return
@@ -87,5 +78,5 @@ func build_graph(fileLines []string) Graph {
 	fileLinksLines := fileLines[nodeCount+2 : nodeCount+2+linkCount]
 	links := build_links(linkCount, fileLinksLines, nodes)
 
-	return Graph{links}
+	return Graph{links, nodes}
 }
