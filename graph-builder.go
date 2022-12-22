@@ -20,7 +20,7 @@ func build_nodes(nodeCount int, fileNodeLines []string) (nodes []Node) {
 	nodes = make([]Node, nodeCount)
 
 	for i, line := range fileNodeLines {
-		var x, y, index = 0, 0, i + 1
+		x, y, index := 0, 0, i+1
 
 		_, err := fmt.Sscanf(line, "%d %d", &x, &y)
 
@@ -28,7 +28,7 @@ func build_nodes(nodeCount int, fileNodeLines []string) (nodes []Node) {
 			log.Fatal(err)
 		}
 
-		nodes = append(nodes, Node{x, y, index})
+		nodes[i] = Node{index, x, y}
 	}
 
 	return
@@ -37,8 +37,14 @@ func build_nodes(nodeCount int, fileNodeLines []string) (nodes []Node) {
 func build_links(linkCount int, fileLinkLines []string, nodes []Node) (links []Link) {
 	links = make([]Link, linkCount)
 
-	for _, line := range fileLinkLines {
-		var indexA, indexB, speed, loadingLevelPercent, distance int
+	for i, line := range fileLinkLines {
+		var (
+			indexA              int
+			indexB              int
+			speed               int
+			loadingLevelPercent int
+			distance            int
+		)
 
 		_, err := fmt.Sscanf(line, "%d %d %d %d %d", &indexA, &indexB, &speed, &loadingLevelPercent, &distance)
 
@@ -56,7 +62,7 @@ func build_links(linkCount int, fileLinkLines []string, nodes []Node) (links []L
 
 		weight := Weight{speed, distance, loadingLevelPercent}
 
-		links = append(links, Link{tail, head, weight})
+		links[i] = Link{head, tail, weight}
 	}
 
 	return
@@ -78,7 +84,7 @@ func build_graph(fileLines []string) Graph {
 		log.Fatalf("File: Can't recognize links between nodes, error: %s", err2)
 	}
 
-	fileLinksLines := fileLines[nodeCount+1 : nodeCount+2]
+	fileLinksLines := fileLines[nodeCount+2 : nodeCount+2+linkCount]
 	links := build_links(linkCount, fileLinksLines, nodes)
 
 	return Graph{links}
