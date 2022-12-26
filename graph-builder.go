@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"math"
 	"strconv"
 )
 
@@ -19,7 +18,7 @@ func build_nodes(nodeCount int, fileNodeLines []string) (nodes []Node) {
 			log.Fatal(err)
 		}
 
-		nodes[i] = Node{index, x, y, false, math.Inf(0)}
+		nodes[i] = Node{index, x, y}
 	}
 
 	return

@@ -19,3 +19,11 @@ func filter[T any](s []T, cond func(t T) bool) []T {
 	}
 	return res
 }
+
+func Map[T, V any](vs []T, f func(T) V) []V {
+	vsm := make([]V, len(vs))
+	for i, v := range vs {
+		vsm[i] = f(v)
+	}
+	return vsm
+}

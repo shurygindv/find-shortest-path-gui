@@ -4,14 +4,11 @@ type Node struct {
 	index int
 	x     int
 	y     int
-	//
-	isVisited bool
-	label     float64
 }
 
 type Weight struct {
 	speed               int
-	distance            int
+	length              int
 	loadingLevelPercent int
 }
 
@@ -22,7 +19,7 @@ type Link struct {
 }
 
 func (l *Link) calculateWeight() float64 {
-	time := float64(l.weight.distance / l.weight.speed)
+	time := float64(l.weight.length / l.weight.speed)
 	load := float64(l.weight.loadingLevelPercent / 100)
 
 	return time * load
@@ -31,9 +28,4 @@ func (l *Link) calculateWeight() float64 {
 type Graph struct {
 	links []Link
 	nodes []Node
-}
-
-type Target struct {
-	sourceNodeIndex      int
-	destinationNodeIndex int
 }
