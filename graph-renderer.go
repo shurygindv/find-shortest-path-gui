@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"image/color"
 	"strconv"
 
@@ -34,7 +33,7 @@ func (g *GraphRenderer) DrawAttachedNamesToNode(nodes []Node) []fyne.CanvasObjec
 	nodeNames := make([]fyne.CanvasObject, len(nodes))
 
 	for i, node := range nodes {
-		nodeName := strconv.Itoa(node.index)
+		nodeName := strconv.Itoa(node.id + 1)
 
 		x, y := get_node_coordinates(node)
 
@@ -69,7 +68,7 @@ func (g *GraphRenderer) DrawLinkWeights(links []Link) []fyne.CanvasObject {
 	weights := make([]fyne.CanvasObject, len(links))
 
 	for i, link := range links {
-		weight := fmt.Sprintf("%.0f", link.calculateWeight())
+		weight := strconv.Itoa(link.calculateWeight())
 
 		startNodeX, startNodeY := get_node_coordinates(link.tail)
 		endNodeX, endNodeY := get_node_coordinates(link.head)

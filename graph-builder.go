@@ -10,7 +10,7 @@ func build_nodes(nodeCount int, fileNodeLines []string) (nodes []Node) {
 	nodes = make([]Node, nodeCount)
 
 	for i, line := range fileNodeLines {
-		x, y, index := 0, 0, i+1
+		x, y, id := 0, 0, i
 
 		_, err := fmt.Sscanf(line, "%d %d", &x, &y)
 
@@ -18,7 +18,7 @@ func build_nodes(nodeCount int, fileNodeLines []string) (nodes []Node) {
 			log.Fatal(err)
 		}
 
-		nodes[i] = Node{index, x, y}
+		nodes[i] = Node{id, x, y}
 	}
 
 	return
@@ -29,25 +29,25 @@ func build_links(linkCount int, fileLinkLines []string, nodes []Node) (links []L
 
 	for i, line := range fileLinkLines {
 		var (
-			indexA              int
-			indexB              int
+			nodeIdA             int
+			nodeIdB             int
 			speed               int
 			loadingLevelPercent int
 			distance            int
 		)
 
-		_, err := fmt.Sscanf(line, "%d %d %d %d %d", &indexA, &indexB, &speed, &loadingLevelPercent, &distance)
+		_, err := fmt.Sscanf(line, "%d %d %d %d %d", &nodeIdA, &nodeIdB, &speed, &loadingLevelPercent, &distance)
 
 		if err != nil {
 			log.Fatal(err)
 		}
 
 		tail := find(nodes, func(node Node) bool {
-			return node.index == indexA
+			return node.id == nodeIdA-1
 		})
 
 		head := find(nodes, func(node Node) bool {
-			return node.index == indexB
+			return node.id == nodeIdB-1
 		})
 
 		weight := Weight{speed, distance, loadingLevelPercent}

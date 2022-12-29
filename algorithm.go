@@ -1,8 +1,9 @@
 package main
 
 type AlgorithmRunnerOptions struct {
-	sourceNode Node
-	renderer   GraphRenderer
+	sourceNodeId      int
+	destinationNodeId int
+	renderer          GraphRenderer
 }
 
 type FindShortestPathAlgorithm struct {

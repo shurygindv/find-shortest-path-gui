@@ -10,14 +10,7 @@ import (
 )
 
 func main() {
-	app := app.New()
-	window := app.NewWindow("Main window")
-
-	os.Setenv("FYNE_SCALE", "1.5")
-
-	window.CenterOnScreen()
-	window.Resize(fyne.NewSize(500, 300))
-	window.SetTitle("Path finder")
+	window := createWindow("Main window")
 
 	graph := build_graph(import_file_points_by_path("data.txt"))
 	graphRenderer := GraphRenderer{graph}
@@ -31,23 +24,37 @@ func main() {
 		graphRenderer.Draw(),
 	)
 
+	handleFindButtonClick := func() {
+		algorithmOptions := AlgorithmRunnerOptions{
+			sourceNodeId:      1,
+			destinationNodeId: 4,
+			renderer:          graphRenderer,
+		}
+
+		algorithm.run(algorithmOptions)
+	}
+
 	content := container.New(
 		layout.NewVBoxLayout(),
 		graphLayout,
 		layout.NewSpacer(),
 		layout.NewSpacer(),
-		FindShortestPathButton(func() {
-			sourceNode := Node{index: 1, x: 128, y: 97}
-
-			algorithmOptions := AlgorithmRunnerOptions{
-				sourceNode,
-				graphRenderer,
-			}
-
-			algorithm.run(algorithmOptions)
-		}),
+		FindShortestPathButton(handleFindButtonClick),
 	)
 
 	window.SetContent(content)
 	window.ShowAndRun()
+}
+
+func createWindow(name string) fyne.Window {
+	app := app.New()
+	window := app.NewWindow(name)
+
+	os.Setenv("FYNE_SCALE", "1.5")
+
+	window.CenterOnScreen()
+	window.Resize(fyne.NewSize(500, 300))
+	window.SetTitle("Path finder")
+
+	return window
 }

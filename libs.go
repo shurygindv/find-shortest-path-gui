@@ -27,3 +27,13 @@ func Map[T, V any](vs []T, f func(T) V) []V {
 	}
 	return vsm
 }
+
+func GenerateEmpty2DMatrix(length int) [][]int {
+	matrix := make([][]int, length)
+
+	for i := range matrix {
+		matrix[i] = make([]int, length)
+	}
+
+	return matrix
+}
