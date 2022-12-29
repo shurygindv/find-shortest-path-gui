@@ -6,6 +6,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/layout"
 )
 
 func main() {
@@ -20,10 +21,31 @@ func main() {
 
 	graph := build_graph(import_file_points_by_path("data.txt"))
 	graphRenderer := GraphRenderer{graph}
+	algorithm := FindShortestPathAlgorithm{
+		graph,
+		graphRenderer,
+	}
 
-	content := container.NewWithoutLayout(
-		container.NewVBox(),
+	graphLayout := container.New(
+		layout.NewMaxLayout(),
 		graphRenderer.Draw(),
+	)
+
+	content := container.New(
+		layout.NewVBoxLayout(),
+		graphLayout,
+		layout.NewSpacer(),
+		layout.NewSpacer(),
+		FindShortestPathButton(func() {
+			sourceNode := Node{index: 1, x: 128, y: 97}
+
+			algorithmOptions := AlgorithmRunnerOptions{
+				sourceNode,
+				graphRenderer,
+			}
+
+			algorithm.run(algorithmOptions)
+		}),
 	)
 
 	window.SetContent(content)

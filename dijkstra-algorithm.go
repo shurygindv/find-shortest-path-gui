@@ -4,6 +4,11 @@ import (
 	"math"
 )
 
+type DijkstraAlgorithm struct {
+	graph    Graph
+	renderer GraphRenderer
+}
+
 type DijkstraNode struct {
 	index     int
 	isVisited bool
@@ -30,7 +35,10 @@ func has_unvisited_nodes(dijkstraNodeData map[int]DijkstraNode) bool {
 	return false
 }
 
-func find_shortest_path(sourceNode Node, graph Graph) []Node {
+func (dijkstraAlgorithm *DijkstraAlgorithm) run(options AlgorithmRunnerOptions) []Node {
+	sourceNode := options.sourceNode
+	graph := dijkstraAlgorithm.graph
+
 	dijkstraNodeData := createDijkstraNodesData(graph.nodes)
 
 	sourceNodeData := dijkstraNodeData[sourceNode.index]
@@ -47,7 +55,11 @@ func find_shortest_path(sourceNode Node, graph Graph) []Node {
 		})
 
 		for _, link := range adjacentLinks {
-			var (nodeData DijkstraNode; prevNode Node; nextNode Node)
+			var (
+				nodeData DijkstraNode
+				prevNode Node
+				nextNode Node
+			)
 
 			if link.head.index == currentNode.index {
 				nextNode = link.tail
