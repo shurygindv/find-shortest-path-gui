@@ -20,9 +20,9 @@ type Link struct {
 
 func (l *Link) calculateWeight() float64 {
 	time := float64(l.weight.length / l.weight.speed)
-	load := float64(l.weight.loadingLevelPercent / 100)
+	load := float64(l.weight.loadingLevelPercent) // / 100
 
-	return time * load
+	return (time + 1) * load
 }
 
 type Graph struct {
