@@ -26,8 +26,8 @@ func main() {
 
 	handleFindButtonClick := func() {
 		algorithmOptions := AlgorithmRunnerOptions{
-			sourceNodeId:      1,
-			destinationNodeId: 4,
+			sourceNodeId:      0, // 1
+			destinationNodeId: 3, // 4
 			renderer:          graphRenderer,
 		}
 

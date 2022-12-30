@@ -11,7 +11,7 @@ type FindShortestPathAlgorithm struct {
 	renderer GraphRenderer
 }
 
-func (pathAlgorithm *FindShortestPathAlgorithm) run(options AlgorithmRunnerOptions) []Node {
+func (pathAlgorithm *FindShortestPathAlgorithm) run(options AlgorithmRunnerOptions) []int {
 	algorithm := DijkstraAlgorithm{
 		graph:    pathAlgorithm.graph,
 		renderer: pathAlgorithm.renderer,

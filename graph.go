@@ -30,6 +30,12 @@ type Graph struct {
 	nodes []Node
 }
 
+func (graph *Graph) getNodeIds() []int {
+	return Map(graph.nodes, func(node Node) int {
+		return node.id
+	})
+}
+
 func (graph *Graph) convertTo2DArray() [][]int {
 	matrix := GenerateEmpty2DMatrix(len(graph.nodes))
 
