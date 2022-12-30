@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"fyne.io/fyne/v2"
@@ -31,7 +32,9 @@ func main() {
 			renderer:          graphRenderer,
 		}
 
-		algorithm.run(algorithmOptions)
+		path := algorithm.run(algorithmOptions)
+
+		fmt.Println(path)
 	}
 
 	content := container.New(

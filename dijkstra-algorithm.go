@@ -11,26 +11,58 @@ type DijkstraAlgorithm struct {
 }
 
 const INFINITY = math.MaxInt64
-const VISITED_NODE = true
-const UNVISITED_NODE_YET = false
 
-func (dijkstraAlgorithm *DijkstraAlgorithm) run(data AlgorithmRunnerOptions) []int {
-	graph := dijkstraAlgorithm.graph
-	destinationNodeId := data.destinationNodeId
-	sourceNodeId := data.sourceNodeId
-	//
-	hasVisitedNodeId := make(map[int]bool)
+type ExtractPathParams struct {
+	sourceNodeId      int
+	destinationNodeId int
+}
+
+func (dijkstraAlgorithm *DijkstraAlgorithm) extractShortestPathFor(
+	shortestPathForAnyNodes []int,
+	params ExtractPathParams,
+) []int {
+	sourceNodeId := params.sourceNodeId
+	currentNodeId := params.destinationNodeId
+	shortestPathList := list.New()
+
+	shortestPathList.PushFront(currentNodeId)
+
+	for shortestPathList.Front().Value != sourceNodeId {
+		nextNodeId := shortestPathForAnyNodes[currentNodeId]
+		currentNodeId = nextNodeId
+
+		shortestPathList.PushFront(currentNodeId)
+	}
+
+	result := make([]int, 0)
+
+	for element := shortestPathList.Front(); element != nil; element = element.Next() {
+		result = append(result, element.Value.(int))
+	}
+
+	return result
+}
+
+func (dijkstraAlgorithm *DijkstraAlgorithm) createInfiniteDistances() map[int]int {
 	distance := make(map[int]int)
-	shortestPathToAnyNode := make([]int, len(graph.nodes))
-	//
-	//
-	graphMatrix := graph.convertTo2DArray()
-	//
-	for _, nodeId := range graph.getNodeIds() {
+
+	for _, nodeId := range dijkstraAlgorithm.graph.getNodeIds() {
 		distance[nodeId] = INFINITY
 	}
 
-	distance[sourceNodeId] = 0
+	return distance
+}
+
+func (dijkstraAlgorithm *DijkstraAlgorithm) run(data AlgorithmRunnerOptions) []int {
+	graph := dijkstraAlgorithm.graph
+	//
+	hasVisitedNodeId := make(map[int]bool)
+	shortestPathToAnyNode := make([]int, len(graph.nodes))
+	//
+	graphMatrix := graph.convertTo2DArray()
+	distance := dijkstraAlgorithm.createInfiniteDistances()
+	//
+	distance[data.sourceNodeId] = 0
 
 	currentNodeId := data.sourceNodeId
 
@@ -46,11 +78,12 @@ func (dijkstraAlgorithm *DijkstraAlgorithm) run(data AlgorithmRunnerOptions) []i
 
 			if (distance[currentNodeId] + adjacentNodeWeight) < distance[nodeId] {
 				distance[nodeId] = distance[currentNodeId] + adjacentNodeWeight
+
 				shortestPathToAnyNode[nodeId] = currentNodeId
 			}
 		}
 
-		hasVisitedNodeId[currentNodeId] = VISITED_NODE
+		hasVisitedNodeId[currentNodeId] = true
 		minDistance := INFINITY
 
 		for nodeId := range adjacentNodes {
@@ -65,24 +98,8 @@ func (dijkstraAlgorithm *DijkstraAlgorithm) run(data AlgorithmRunnerOptions) []i
 		}
 	}
 
-	//
-	shortestPathList := list.New()
-
-	shortestPathList.PushFront(destinationNodeId)
-	currentNodeId = destinationNodeId
-
-	for shortestPathList.Front().Value != sourceNodeId {
-		nextNodeId := shortestPathToAnyNode[currentNodeId]
-		currentNodeId = nextNodeId
-
-		shortestPathList.PushFront(currentNodeId)
-	}
-
-	result := make([]int, 0)
-
-	for element := shortestPathList.Front(); element != nil; element = element.Next() {
-		result = append(result, element.Value.(int))
-	}
-
-	return result
+	return dijkstraAlgorithm.extractShortestPathFor(shortestPathToAnyNode, ExtractPathParams{
+		sourceNodeId:      data.sourceNodeId,
+		destinationNodeId: data.destinationNodeId,
+	})
 }
