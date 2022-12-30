@@ -1,16 +1,13 @@
 package main
 
-import "math"
+import (
+	"container/list"
+	"math"
+)
 
 type DijkstraAlgorithm struct {
 	graph    Graph
 	renderer GraphRenderer
-}
-
-type DijkstraNode struct {
-	index     int
-	isVisited bool
-	distance  float64
 }
 
 const INFINITY = math.MaxInt64
@@ -18,13 +15,14 @@ const VISITED_NODE = true
 const UNVISITED_NODE_YET = false
 
 func (dijkstraAlgorithm *DijkstraAlgorithm) run(data AlgorithmRunnerOptions) []int {
+	graph := dijkstraAlgorithm.graph
+	destinationNodeId := data.destinationNodeId
+	sourceNodeId := data.sourceNodeId
+	//
 	hasVisitedNodeId := make(map[int]bool)
 	distance := make(map[int]int)
-	path := make([]int, 0)
+	shortestPathToAnyNode := make([]int, len(graph.nodes))
 	//
-	graph := dijkstraAlgorithm.graph
-	//	destinationNodeId := data.destinationNodeId
-	sourceNodeId := data.sourceNodeId
 	//
 	graphMatrix := graph.convertTo2DArray()
 	//
@@ -48,12 +46,11 @@ func (dijkstraAlgorithm *DijkstraAlgorithm) run(data AlgorithmRunnerOptions) []i
 
 			if (distance[currentNodeId] + adjacentNodeWeight) < distance[nodeId] {
 				distance[nodeId] = distance[currentNodeId] + adjacentNodeWeight
+				shortestPathToAnyNode[nodeId] = currentNodeId
 			}
 		}
 
-		path = append(path, currentNodeId)
 		hasVisitedNodeId[currentNodeId] = VISITED_NODE
-
 		minDistance := INFINITY
 
 		for nodeId := range adjacentNodes {
@@ -68,5 +65,24 @@ func (dijkstraAlgorithm *DijkstraAlgorithm) run(data AlgorithmRunnerOptions) []i
 		}
 	}
 
-	return path
+	//
+	shortestPathList := list.New()
+
+	shortestPathList.PushFront(destinationNodeId)
+	currentNodeId = destinationNodeId
+
+	for shortestPathList.Front().Value != sourceNodeId {
+		nextNodeId := shortestPathToAnyNode[currentNodeId]
+		currentNodeId = nextNodeId
+
+		shortestPathList.PushFront(currentNodeId)
+	}
+
+	result := make([]int, 0)
+
+	for element := shortestPathList.Front(); element != nil; element = element.Next() {
+		result = append(result, element.Value.(int))
+	}
+
+	return result
 }
