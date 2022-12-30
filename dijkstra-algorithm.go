@@ -53,6 +53,7 @@ func (dijkstraAlgorithm *DijkstraAlgorithm) createInfiniteDistances() map[int]in
 	return distance
 }
 
+// TODO: may rethink
 func (dijkstraAlgorithm *DijkstraAlgorithm) run(data AlgorithmRunnerOptions) []int {
 	graph := dijkstraAlgorithm.graph
 	//
