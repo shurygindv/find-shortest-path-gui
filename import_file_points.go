@@ -9,7 +9,7 @@ import (
 
 const LinesCount int = 18
 
-func import_file_points_by_path(path string) []string {
+func ImportFilePointsByPath(path string) []string {
 	f, err := os.OpenFile(path, os.O_RDONLY, os.ModePerm)
 
 	if err != nil {
@@ -22,10 +22,10 @@ func import_file_points_by_path(path string) []string {
 		}
 	}()
 
-	return import_file_points_stream(f)
+	return ImportFilePointsStream(f)
 }
 
-func import_file_points_stream(r io.Reader) []string {
+func ImportFilePointsStream(r io.Reader) []string {
 	scanner := bufio.NewScanner(r)
 	lines := make([]string, 0, LinesCount)
 

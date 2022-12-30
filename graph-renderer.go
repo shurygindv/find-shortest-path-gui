@@ -13,14 +13,14 @@ type GraphRenderer struct {
 	data Graph
 }
 
-func get_node_coordinates(node Node) (float32, float32) {
+func getNodeCoordinates(node Node) (float32, float32) {
 	x := float32(node.x)
 	y := float32(node.y)
 
 	return x, y
 }
 
-func draw_text(name string, color color.Color) *canvas.Text {
+func drawText(name string, color color.Color) *canvas.Text {
 	text := canvas.NewText(name, color)
 	text.Alignment = fyne.TextAlignTrailing
 	text.TextStyle = fyne.TextStyle{Bold: true}
@@ -35,9 +35,9 @@ func (g *GraphRenderer) DrawAttachedNamesToNode(nodes []Node) []fyne.CanvasObjec
 	for i, node := range nodes {
 		nodeName := strconv.Itoa(node.id + 1)
 
-		x, y := get_node_coordinates(node)
+		x, y := getNodeCoordinates(node)
 
-		nodeText := draw_text(nodeName, color.White)
+		nodeText := drawText(nodeName, color.White)
 		nodeText.Move(fyne.NewPos(x, y))
 
 		nodeNames[i] = nodeText
@@ -46,14 +46,14 @@ func (g *GraphRenderer) DrawAttachedNamesToNode(nodes []Node) []fyne.CanvasObjec
 	return nodeNames
 }
 
-func (g *GraphRenderer) DrawLines(links []Link) []fyne.CanvasObject {
-	lines := make([]fyne.CanvasObject, len(links))
+func (g *GraphRenderer) DrawLines(edges []Edge) []fyne.CanvasObject {
+	lines := make([]fyne.CanvasObject, len(edges))
 
-	for i, link := range links {
+	for i, edge := range edges {
 		line := canvas.NewLine(color.White)
 
-		startNodeX, startNodeY := get_node_coordinates(link.tail)
-		endNodeX, endNodeY := get_node_coordinates(link.head)
+		startNodeX, startNodeY := getNodeCoordinates(edge.tail)
+		endNodeX, endNodeY := getNodeCoordinates(edge.head)
 
 		line.Position1 = fyne.NewPos(startNodeX, startNodeY)
 		line.Position2 = fyne.NewPos(endNodeX, endNodeY)
@@ -64,16 +64,16 @@ func (g *GraphRenderer) DrawLines(links []Link) []fyne.CanvasObject {
 	return lines
 }
 
-func (g *GraphRenderer) DrawLinkWeights(links []Link) []fyne.CanvasObject {
-	weights := make([]fyne.CanvasObject, len(links))
+func (g *GraphRenderer) DrawEdgeWeights(edges []Edge) []fyne.CanvasObject {
+	weights := make([]fyne.CanvasObject, len(edges))
 
-	for i, link := range links {
-		weight := strconv.Itoa(link.calculateWeight())
+	for i, edge := range edges {
+		weight := strconv.Itoa(edge.CalculateWeight())
 
-		startNodeX, startNodeY := get_node_coordinates(link.tail)
-		endNodeX, endNodeY := get_node_coordinates(link.head)
+		startNodeX, startNodeY := getNodeCoordinates(edge.tail)
+		endNodeX, endNodeY := getNodeCoordinates(edge.head)
 
-		weightText := draw_text(weight, color.Gray{0x99})
+		weightText := drawText(weight, color.Gray{0x99})
 		weightText.TextSize = 12
 
 		weightText.Move(fyne.NewPos(
@@ -88,12 +88,12 @@ func (g *GraphRenderer) DrawLinkWeights(links []Link) []fyne.CanvasObject {
 }
 
 func (g *GraphRenderer) Draw() *fyne.Container {
-	lines := g.DrawLines(g.data.links)
+	lines := g.DrawLines(g.data.edges)
 	nodeNames := g.DrawAttachedNamesToNode(g.data.nodes)
-	linkWeights := g.DrawLinkWeights(g.data.links)
+	edgeWeights := g.DrawEdgeWeights(g.data.edges)
 
 	picture := append(lines, nodeNames...)
-	picture = append(picture, linkWeights...)
+	picture = append(picture, edgeWeights...)
 
 	return container.NewWithoutLayout(
 		picture...,

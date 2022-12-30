@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func build_nodes(nodeCount int, fileNodeLines []string) (nodes []Node) {
+func buildNodes(nodeCount int, fileNodeLines []string) (nodes []Node) {
 	nodes = make([]Node, nodeCount)
 
 	for i, line := range fileNodeLines {
@@ -24,10 +24,10 @@ func build_nodes(nodeCount int, fileNodeLines []string) (nodes []Node) {
 	return
 }
 
-func build_links(linkCount int, fileLinkLines []string, nodes []Node) (links []Link) {
-	links = make([]Link, linkCount)
+func buildEdges(edgesCount int, fileEdgeLines []string, nodes []Node) (edges []Edge) {
+	edges = make([]Edge, edgesCount)
 
-	for i, line := range fileLinkLines {
+	for i, line := range fileEdgeLines {
 		var (
 			nodeIdA             int
 			nodeIdB             int
@@ -42,23 +42,23 @@ func build_links(linkCount int, fileLinkLines []string, nodes []Node) (links []L
 			log.Fatal(err)
 		}
 
-		tail := find(nodes, func(node Node) bool {
+		tail := Find(nodes, func(node Node) bool {
 			return node.id == nodeIdA-1
 		})
 
-		head := find(nodes, func(node Node) bool {
+		head := Find(nodes, func(node Node) bool {
 			return node.id == nodeIdB-1
 		})
 
 		weight := Weight{speed, distance, loadingLevelPercent}
 
-		links[i] = Link{head, tail, weight}
+		edges[i] = Edge{head, tail, weight}
 	}
 
 	return
 }
 
-func build_graph(fileLines []string) Graph {
+func BuildGraph(fileLines []string) Graph {
 	nodeCount, err := strconv.Atoi(fileLines[0])
 
 	if err != nil {
@@ -66,16 +66,16 @@ func build_graph(fileLines []string) Graph {
 	}
 
 	fileNodeLines := fileLines[1 : nodeCount+1]
-	nodes := build_nodes(nodeCount, fileNodeLines)
+	nodes := buildNodes(nodeCount, fileNodeLines)
 
-	linkCount, err2 := strconv.Atoi(fileLines[nodeCount+1])
+	edgesCount, err2 := strconv.Atoi(fileLines[nodeCount+1])
 
 	if err2 != nil {
-		log.Fatalf("File: Can't recognize links between nodes, error: %s", err2)
+		log.Fatalf("File: Can't recognize edges between nodes, error: %s", err2)
 	}
 
-	fileLinksLines := fileLines[nodeCount+2 : nodeCount+2+linkCount]
-	links := build_links(linkCount, fileLinksLines, nodes)
+	fileEdgesLines := fileLines[nodeCount+2 : nodeCount+2+edgesCount]
+	edges := buildEdges(edgesCount, fileEdgesLines, nodes)
 
-	return Graph{links, nodes}
+	return Graph{edges, nodes}
 }

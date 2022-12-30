@@ -1,7 +1,7 @@
 package main
 
 type Node struct {
-	id int
+	id int // TODO: id is an index (file line)
 	x  int
 	y  int
 }
@@ -12,13 +12,13 @@ type Weight struct {
 	loadingLevelPercent int
 }
 
-type Link struct {
+type Edge struct {
 	head   Node
 	tail   Node
 	weight Weight
 }
 
-func (l *Link) calculateWeight() int {
+func (l *Edge) CalculateWeight() int {
 	time := float64(l.weight.length / l.weight.speed)
 	load := float64(l.weight.loadingLevelPercent) // / 100
 
@@ -26,7 +26,7 @@ func (l *Link) calculateWeight() int {
 }
 
 type Graph struct {
-	links []Link
+	edges []Edge
 	nodes []Node
 }
 
@@ -39,12 +39,12 @@ func (graph *Graph) getNodeIds() []int {
 func (graph *Graph) convertTo2DArray() [][]int {
 	matrix := GenerateEmpty2DMatrix(len(graph.nodes))
 
-	for _, link := range graph.links {
-		weight := link.calculateWeight()
+	for _, edge := range graph.edges {
+		weight := edge.CalculateWeight()
 
 		// undirected graph
-		matrix[link.tail.id][link.head.id] = weight
-		matrix[link.head.id][link.tail.id] = weight
+		matrix[edge.tail.id][edge.head.id] = weight
+		matrix[edge.head.id][edge.tail.id] = weight
 	}
 
 	return matrix

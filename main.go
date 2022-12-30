@@ -11,9 +11,9 @@ import (
 )
 
 func main() {
-	window := createWindow("Main window")
+	window := CreateWindow("Main window")
 
-	graph := build_graph(import_file_points_by_path("data.txt"))
+	graph := BuildGraph(ImportFilePointsByPath("data.txt"))
 	graphRenderer := GraphRenderer{graph}
 	algorithm := FindShortestPathAlgorithm{
 		graph,
@@ -49,7 +49,7 @@ func main() {
 	window.ShowAndRun()
 }
 
-func createWindow(name string) fyne.Window {
+func CreateWindow(name string) fyne.Window {
 	app := app.New()
 	window := app.NewWindow(name)
 
