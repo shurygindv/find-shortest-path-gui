@@ -7,7 +7,6 @@ import (
 
 type DijkstraAlgorithm struct {
 	graph    Graph
-	renderer GraphRenderer
 }
 
 const INFINITE = math.MaxInt64

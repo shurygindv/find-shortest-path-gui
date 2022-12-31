@@ -11,12 +11,12 @@ func main() {
 	app := app.New()
 	window := app.NewWindow("Main window")
 
-	os.Setenv("FYNE_SCALE", "1.5")
+	os.Setenv("FYNE_SCALE", "1.3")
 
-	content := MainAppContent() // main-app-content.go
+	content := MainAppLayout() // main-app-layout.go
 
 	window.CenterOnScreen()
-	window.Resize(fyne.NewSize(500, 350))
+	window.Resize(fyne.NewSize(550, 370))
 	window.SetTitle("Path finder")
 	window.SetContent(content)
 	window.ShowAndRun()

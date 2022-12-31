@@ -1,5 +1,7 @@
 package main
 
+import "strconv"
+
 func Find[T any](array []T, fn func(T) bool) *T {
 	for _, v := range array {
 		if fn(v) {
@@ -51,4 +53,18 @@ func GenerateEmpty2DMatrix(length int) [][]int {
 	}
 
 	return matrix
+}
+
+func GenerateNodeOptionsForSelect(nodesCount int) ([]string, map[string]int) {
+	options := make([]string, nodesCount)
+	optionsMap := make(map[string]int)
+
+	for i := range options {
+		optionLabel := strconv.Itoa(i + 1)
+
+		options[i] = optionLabel
+		optionsMap[optionLabel] = i
+	}
+
+	return options, optionsMap
 }

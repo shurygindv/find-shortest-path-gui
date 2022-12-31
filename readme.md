@@ -1,21 +1,20 @@
+# Find a shortest path
+
+See description below
+
+
 ## Preview
 
-TODO
+![preview](https://lh3.googleusercontent.com/pw/AL9nZEWcqeZWblhjEMOh3SROJhOC6FcuKIay3O2n5AxUJxfwDKtNhdV-cfa0PFcmEBD10EgacCDrDJ2RxzcG-1PBjH7uxSSObujVMlFz_bCV0sQxkird0wex7-cLA6TPRVTmG5rMxdbgjBpWLBj80b0d31dx=w500-h359-no?authuser=0)
 
-
-## Plans
-1. Add combo-boxes to choose source/destinations nodes
-2. Add tests
-3. Reorganize folder structure
-4. Apply whited theme
-5. Refactor (effective go)
 
 ## Installation
 
-1. Install https://go.dev/doc/install
+1. Install Go https://go.dev/doc/install
 2. `git clone https://github.com/shurygindv/shortest-path-between-cities`
 3. `cd shortest-path-between-cities`
 3. `go run .`
+
 
 ## Description
 
@@ -34,8 +33,19 @@ N2 K2 B2 L2 D2
 NM KM BM LM DM
 ```
 
-## Solution
+
+## Links
+https://math.hws.edu/eck/cs327_s04/chapter8.pdf
+https://algs4.cs.princeton.edu/44sp/
+https://www.freecodecamp.org/news/dijkstras-shortest-path-algorithm-visual-introduction/#:~:text=Dijkstra's%20Algorithm%20finds%20the%20shortest,node%20and%20all%20other%20nodes. 
 https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+
+## TODOs
+1. Add combo-boxes to choose source/destinations nodes ✅
+2. Add tests ⌛
+3. Reorganize folder structure
+4. Redesign default theme
+5. Refactor (effective go)
 
 ## Stack
 
