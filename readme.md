@@ -2,6 +2,14 @@
 
 TODO
 
+
+## Plans
+1. Add combo-boxes to choose source/destinations nodes
+2. Add tests
+3. Reorganize folder structure
+4. Apply whited theme
+5. Refactor (effective go)
+
 ## Installation
 
 1. Install https://go.dev/doc/install

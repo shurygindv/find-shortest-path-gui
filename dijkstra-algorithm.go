@@ -10,7 +10,7 @@ type DijkstraAlgorithm struct {
 	renderer GraphRenderer
 }
 
-const INFINITY = math.MaxInt64
+const INFINITE = math.MaxInt64
 
 type ExtractPathParams struct {
 	sourceNodeId      int
@@ -47,7 +47,7 @@ func (dijkstraAlgorithm *DijkstraAlgorithm) createInfiniteDistances() map[int]in
 	distance := make(map[int]int)
 
 	for _, nodeId := range dijkstraAlgorithm.graph.getNodeIds() {
-		distance[nodeId] = INFINITY
+		distance[nodeId] = INFINITE
 	}
 
 	return distance
@@ -77,15 +77,17 @@ func (dijkstraAlgorithm *DijkstraAlgorithm) run(data AlgorithmRunnerOptions) []i
 				continue
 			}
 
-			if (distance[currentNodeId] + adjacentNodeWeight) < distance[nodeId] {
-				distance[nodeId] = distance[currentNodeId] + adjacentNodeWeight
+			prevPlusNextDistance := distance[currentNodeId] + adjacentNodeWeight
+
+			if prevPlusNextDistance < distance[nodeId] {
+				distance[nodeId] = prevPlusNextDistance
 
 				shortestPathToAnyNode[nodeId] = currentNodeId
 			}
 		}
 
 		hasVisitedNodeId[currentNodeId] = true
-		minDistance := INFINITY
+		minDistance := INFINITE
 
 		for nodeId := range adjacentNodes {
 			if hasVisitedNodeId[nodeId] || adjacentNodes[nodeId] == 0 {

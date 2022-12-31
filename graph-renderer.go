@@ -2,11 +2,11 @@ package main
 
 import (
 	"image/color"
+	"log"
 	"strconv"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
-	"fyne.io/fyne/v2/container"
 )
 
 type GraphRenderer struct {
@@ -46,19 +46,23 @@ func (g *GraphRenderer) DrawAttachedNamesToNode(nodes []Node) []fyne.CanvasObjec
 	return nodeNames
 }
 
+func (g *GraphRenderer) DrawLinesBetweenNodes(tail Node, head Node) *canvas.Line {
+	line := canvas.NewLine(color.White)
+
+	startNodeX, startNodeY := getNodeCoordinates(tail)
+	endNodeX, endNodeY := getNodeCoordinates(head)
+
+	line.Position1 = fyne.NewPos(startNodeX, startNodeY)
+	line.Position2 = fyne.NewPos(endNodeX, endNodeY)
+
+	return line
+}
+
 func (g *GraphRenderer) DrawLines(edges []Edge) []fyne.CanvasObject {
 	lines := make([]fyne.CanvasObject, len(edges))
 
 	for i, edge := range edges {
-		line := canvas.NewLine(color.White)
-
-		startNodeX, startNodeY := getNodeCoordinates(edge.tail)
-		endNodeX, endNodeY := getNodeCoordinates(edge.head)
-
-		line.Position1 = fyne.NewPos(startNodeX, startNodeY)
-		line.Position2 = fyne.NewPos(endNodeX, endNodeY)
-
-		lines[i] = line
+		lines[i] = g.DrawLinesBetweenNodes(edge.tail, edge.head)
 	}
 
 	return lines
@@ -87,15 +91,42 @@ func (g *GraphRenderer) DrawEdgeWeights(edges []Edge) []fyne.CanvasObject {
 	return weights
 }
 
-func (g *GraphRenderer) Draw() *fyne.Container {
+func (g *GraphRenderer) Draw() []fyne.CanvasObject {
 	lines := g.DrawLines(g.data.edges)
 	nodeNames := g.DrawAttachedNamesToNode(g.data.nodes)
 	edgeWeights := g.DrawEdgeWeights(g.data.edges)
 
-	picture := append(lines, nodeNames...)
-	picture = append(picture, edgeWeights...)
+	renderedGraph := append(lines, nodeNames...)
+	renderedGraph = append(renderedGraph, edgeWeights...)
 
-	return container.NewWithoutLayout(
-		picture...,
-	)
+	return renderedGraph
+}
+
+func (g *GraphRenderer) DrawHighlightedPath(nodePathIds []int) []fyne.CanvasObject {
+	orderedNodes := make([]Node, len(nodePathIds))
+
+	for i, nodeId := range nodePathIds {
+		found, isEmpty := Find2(g.data.nodes, func(node Node) bool {
+			return nodeId == node.id
+		})
+
+		if isEmpty {
+			log.Fatalf("Can't create a final path, missing node")
+		}
+
+		orderedNodes[i] = *found
+	}
+
+	lines := make([]fyne.CanvasObject, 0)
+
+	for i := range orderedNodes[1:] {
+		line := g.DrawLinesBetweenNodes(orderedNodes[i+1], orderedNodes[i])
+
+		line.StrokeWidth = 2
+		line.StrokeColor = color.NRGBA{0xff, 0x00, 0x00, 0xff}
+
+		lines = append(lines, line)
+	}
+
+	return append(g.Draw(), lines...)
 }

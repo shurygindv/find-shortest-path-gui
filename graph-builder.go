@@ -52,7 +52,7 @@ func buildEdges(edgesCount int, fileEdgeLines []string, nodes []Node) (edges []E
 
 		weight := Weight{speed, distance, loadingLevelPercent}
 
-		edges[i] = Edge{head, tail, weight}
+		edges[i] = Edge{*head, *tail, weight}
 	}
 
 	return

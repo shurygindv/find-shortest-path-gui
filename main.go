@@ -1,63 +1,23 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
-	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/layout"
 )
 
 func main() {
-	window := CreateWindow("Main window")
-
-	graph := BuildGraph(ImportFilePointsByPath("data.txt"))
-	graphRenderer := GraphRenderer{graph}
-	algorithm := FindShortestPathAlgorithm{
-		graph,
-		graphRenderer,
-	}
-
-	graphLayout := container.New(
-		layout.NewMaxLayout(),
-		graphRenderer.Draw(),
-	)
-
-	handleFindButtonClick := func() {
-		algorithmOptions := AlgorithmRunnerOptions{
-			sourceNodeId:      0, // 1
-			destinationNodeId: 3, // 4
-			renderer:          graphRenderer,
-		}
-
-		path := algorithm.run(algorithmOptions)
-
-		fmt.Println(path)
-	}
-
-	content := container.New(
-		layout.NewVBoxLayout(),
-		graphLayout,
-		layout.NewSpacer(),
-		layout.NewSpacer(),
-		FindShortestPathButton(handleFindButtonClick),
-	)
-
-	window.SetContent(content)
-	window.ShowAndRun()
-}
-
-func CreateWindow(name string) fyne.Window {
 	app := app.New()
-	window := app.NewWindow(name)
+	window := app.NewWindow("Main window")
 
 	os.Setenv("FYNE_SCALE", "1.5")
 
-	window.CenterOnScreen()
-	window.Resize(fyne.NewSize(500, 300))
-	window.SetTitle("Path finder")
+	content := MainAppContent() // main-app-content.go
 
-	return window
+	window.CenterOnScreen()
+	window.Resize(fyne.NewSize(500, 350))
+	window.SetTitle("Path finder")
+	window.SetContent(content)
+	window.ShowAndRun()
 }
