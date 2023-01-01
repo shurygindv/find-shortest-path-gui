@@ -1,4 +1,4 @@
-package main
+package graph
 
 import (
 	"container/list"
@@ -6,7 +6,7 @@ import (
 )
 
 type DijkstraAlgorithm struct {
-	graph    Graph
+	graphApi GraphApi
 }
 
 const INFINITE = math.MaxInt64
@@ -42,10 +42,10 @@ func (dijkstraAlgorithm *DijkstraAlgorithm) extractShortestPathFor(
 	return result
 }
 
-func (dijkstraAlgorithm *DijkstraAlgorithm) createInfiniteDistances() map[int]int {
+func (algorithm *DijkstraAlgorithm) createInfiniteDistances() map[int]int {
 	distance := make(map[int]int)
 
-	for _, nodeId := range dijkstraAlgorithm.graph.getNodeIds() {
+	for _, nodeId := range algorithm.graphApi.GetNodeIds() {
 		distance[nodeId] = INFINITE
 	}
 
@@ -53,14 +53,14 @@ func (dijkstraAlgorithm *DijkstraAlgorithm) createInfiniteDistances() map[int]in
 }
 
 // TODO: may rethink
-func (dijkstraAlgorithm *DijkstraAlgorithm) run(data AlgorithmRunnerOptions) []int {
-	graph := dijkstraAlgorithm.graph
+func (algorithm *DijkstraAlgorithm) run(data AlgorithmRunnerOptions) []int {
+	graphApi := algorithm.graphApi
 	//
 	hasVisitedNodeId := make(map[int]bool)
-	shortestPathToAnyNode := make([]int, len(graph.nodes))
+	shortestPathToAnyNode := make([]int, graphApi.GetNodesCount())
 	//
-	graphMatrix := graph.convertTo2DArray()
-	distance := dijkstraAlgorithm.createInfiniteDistances()
+	graphMatrix := graphApi.ConvertGraphTo2DArray()
+	distance := algorithm.createInfiniteDistances()
 	//
 	distance[data.sourceNodeId] = 0
 
@@ -100,7 +100,7 @@ func (dijkstraAlgorithm *DijkstraAlgorithm) run(data AlgorithmRunnerOptions) []i
 		}
 	}
 
-	return dijkstraAlgorithm.extractShortestPathFor(shortestPathToAnyNode, ExtractPathParams{
+	return algorithm.extractShortestPathFor(shortestPathToAnyNode, ExtractPathParams{
 		sourceNodeId:      data.sourceNodeId,
 		destinationNodeId: data.destinationNodeId,
 	})

@@ -1,4 +1,4 @@
-package main
+package ui
 
 import (
 	"image/color"
@@ -7,15 +7,18 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
+
+	"shortestpath/app/internal/graph"
+	"shortestpath/app/pkg"
 )
 
 type GraphRenderer struct {
-	data Graph
+	data graph.Graph
 }
 
-func getNodeCoordinates(node Node) (float32, float32) {
-	x := float32(node.x)
-	y := float32(node.y)
+func getNodeCoordinates(node graph.Node) (float32, float32) {
+	x := float32(node.X)
+	y := float32(node.Y)
 
 	return x, y
 }
@@ -29,11 +32,11 @@ func drawText(name string, color color.Color) *canvas.Text {
 	return text
 }
 
-func (g *GraphRenderer) DrawAttachedNamesToNode(nodes []Node) []fyne.CanvasObject {
+func (g *GraphRenderer) DrawAttachedNamesToNode(nodes []graph.Node) []fyne.CanvasObject {
 	nodeNames := make([]fyne.CanvasObject, len(nodes))
 
 	for i, node := range nodes {
-		nodeName := strconv.Itoa(node.id + 1)
+		nodeName := strconv.Itoa(node.ID + 1)
 
 		x, y := getNodeCoordinates(node)
 
@@ -46,7 +49,7 @@ func (g *GraphRenderer) DrawAttachedNamesToNode(nodes []Node) []fyne.CanvasObjec
 	return nodeNames
 }
 
-func (g *GraphRenderer) DrawLinesBetweenNodes(tail Node, head Node) *canvas.Line {
+func (g *GraphRenderer) DrawLinesBetweenNodes(tail graph.Node, head graph.Node) *canvas.Line {
 	line := canvas.NewLine(color.White)
 
 	startNodeX, startNodeY := getNodeCoordinates(tail)
@@ -58,24 +61,24 @@ func (g *GraphRenderer) DrawLinesBetweenNodes(tail Node, head Node) *canvas.Line
 	return line
 }
 
-func (g *GraphRenderer) DrawLines(edges []Edge) []fyne.CanvasObject {
+func (g *GraphRenderer) DrawLines(edges []graph.Edge) []fyne.CanvasObject {
 	lines := make([]fyne.CanvasObject, len(edges))
 
 	for i, edge := range edges {
-		lines[i] = g.DrawLinesBetweenNodes(edge.tail, edge.head)
+		lines[i] = g.DrawLinesBetweenNodes(edge.Tail, edge.Head)
 	}
 
 	return lines
 }
 
-func (g *GraphRenderer) DrawEdgeWeights(edges []Edge) []fyne.CanvasObject {
+func (g *GraphRenderer) DrawEdgeWeights(edges []graph.Edge) []fyne.CanvasObject {
 	weights := make([]fyne.CanvasObject, len(edges))
 
 	for i, edge := range edges {
 		weight := strconv.Itoa(edge.CalculateWeight())
 
-		startNodeX, startNodeY := getNodeCoordinates(edge.tail)
-		endNodeX, endNodeY := getNodeCoordinates(edge.head)
+		startNodeX, startNodeY := getNodeCoordinates(edge.Tail)
+		endNodeX, endNodeY := getNodeCoordinates(edge.Head)
 
 		weightText := drawText(weight, color.Gray{0x99})
 		weightText.TextSize = 12
@@ -92,9 +95,9 @@ func (g *GraphRenderer) DrawEdgeWeights(edges []Edge) []fyne.CanvasObject {
 }
 
 func (g *GraphRenderer) Draw() []fyne.CanvasObject {
-	lines := g.DrawLines(g.data.edges)
-	nodeNames := g.DrawAttachedNamesToNode(g.data.nodes)
-	edgeWeights := g.DrawEdgeWeights(g.data.edges)
+	lines := g.DrawLines(g.data.Edges)
+	nodeNames := g.DrawAttachedNamesToNode(g.data.Nodes)
+	edgeWeights := g.DrawEdgeWeights(g.data.Edges)
 
 	renderedGraph := append(lines, nodeNames...)
 	renderedGraph = append(renderedGraph, edgeWeights...)
@@ -103,11 +106,11 @@ func (g *GraphRenderer) Draw() []fyne.CanvasObject {
 }
 
 func (g *GraphRenderer) DrawHighlightedPath(nodePathIds []int) []fyne.CanvasObject {
-	orderedNodes := make([]Node, len(nodePathIds))
+	orderedNodes := make([]graph.Node, len(nodePathIds))
 
 	for i, nodeId := range nodePathIds {
-		found, isEmpty := Find2(g.data.nodes, func(node Node) bool {
-			return nodeId == node.id
+		found, isEmpty := utils.Find2(g.data.Nodes, func(node graph.Node) bool {
+			return nodeId == node.ID
 		})
 
 		if isEmpty {

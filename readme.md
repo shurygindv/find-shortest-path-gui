@@ -1,4 +1,4 @@
-# shortest-path-between-cities
+# find-shortest-path-gui
 
 
 ### Preview
@@ -9,21 +9,21 @@
 ### Installation
 
 1. Install Go https://go.dev/doc/install
-2. `git clone https://github.com/shurygindv/shortest-path-between-cities`
-3. `cd shortest-path-between-cities`
+2. `git clone https://github.com/shurygindv/find-shortest-path-gui`
+3. `cd find-shortest-path-gui`
 3. `go run .`
 
 ### TODOs
 1. Add combo-boxes to choose source/destinations nodes ✅
-2. Add tests ⌛
-3. Reorganize folder structure
+2. Reorganize folder structure ✅
+3. Add tests ⌛
 4. Redesign default theme
 5. Refactor (effective go)
 
 
 ### Description
 
-There is a file with a description of the map of the city. Each link has three weights - the maximum bandwith of the road, its current load level as a percentage, and the distance between them. A possible variant of the file structure is given below
+There is a file with a description of the map of the city. Each road has three weights - the maximum bandwith of the road, its current load level as a percentage, and the distance between them. A possible variant of the file structure is given below
 
 ```
 N - number of nodes (cities)

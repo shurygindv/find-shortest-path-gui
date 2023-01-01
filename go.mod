@@ -1,4 +1,4 @@
-module shortest-path-between-cities
+module shortestpath/app
 
 go 1.19
 

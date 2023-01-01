@@ -1,9 +1,11 @@
-package main
+package graph
 
 import (
 	"fmt"
 	"log"
 	"strconv"
+
+	"shortestpath/app/pkg"
 )
 
 func buildNodes(nodeCount int, fileNodeLines []string) (nodes []Node) {
@@ -42,12 +44,12 @@ func buildEdges(edgesCount int, fileEdgeLines []string, nodes []Node) (edges []E
 			log.Fatal(err)
 		}
 
-		tail := Find(nodes, func(node Node) bool {
-			return node.id == nodeIdA-1
+		tail := utils.Find(nodes, func(node Node) bool {
+			return node.ID == nodeIdA-1
 		})
 
-		head := Find(nodes, func(node Node) bool {
-			return node.id == nodeIdB-1
+		head := utils.Find(nodes, func(node Node) bool {
+			return node.ID == nodeIdB-1
 		})
 
 		weight := Weight{speed, distance, loadingLevelPercent}

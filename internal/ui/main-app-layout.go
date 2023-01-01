@@ -1,27 +1,29 @@
-package main
+package ui
 
 import (
 	"fmt"
+
+	"shortestpath/app/internal/graph"
+	"shortestpath/app/pkg"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 )
 
-func MainAppLayout() *fyne.Container {
-	// Graph layout
-	graph := BuildGraph(ImportFilePointsByPath("data.txt"))
-	graphRenderer := GraphRenderer{graph}
-	algorithm := FindShortestPathAlgorithm{
-		graph,
+func MainAppLayout(graphApi graph.GraphApi) *fyne.Container {
+	graphRenderer := GraphRenderer{
+		data: graphApi.Data,
 	}
 
 	graphLayout := container.NewWithoutLayout(
 		graphRenderer.Draw()...,
 	)
 
-	// Selects layout
-	options, optionsMap := GenerateNodeOptionsForSelect(len(graph.nodes))
+	// Selects
+	options, optionsMap := utils.GenerateNodeOptionsForSelect(
+		graphApi.GetNodesCount(),
+	)
 
 	sourceSelect, sourceSelectAPI := SelectContainer(SelectComboBoxProps{
 		label:   "Source node",
@@ -34,12 +36,10 @@ func MainAppLayout() *fyne.Container {
 	})
 
 	handleFindButtonClick := func() {
-		algorithmOptions := AlgorithmRunnerOptions{
-			sourceNodeId:      optionsMap[sourceSelectAPI.Selected],
-			destinationNodeId: optionsMap[destinationSelectAPI.Selected],
-		}
+		sourceNodeId := optionsMap[sourceSelectAPI.Selected]
+		destinationNodeId := optionsMap[destinationSelectAPI.Selected]
 
-		foundPath := algorithm.run(algorithmOptions)
+		foundPath := graphApi.FindShortestPath(sourceNodeId, destinationNodeId)
 
 		graphLayout.Objects = graphRenderer.DrawHighlightedPath(foundPath)
 		graphLayout.Refresh()

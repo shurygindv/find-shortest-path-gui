@@ -1,4 +1,4 @@
-package main
+package graph
 
 type AlgorithmRunnerOptions struct {
 	sourceNodeId      int
@@ -6,12 +6,12 @@ type AlgorithmRunnerOptions struct {
 }
 
 type FindShortestPathAlgorithm struct {
-	graph    Graph
+	graphApi GraphApi
 }
 
 func (pathAlgorithm *FindShortestPathAlgorithm) run(options AlgorithmRunnerOptions) []int {
 	algorithm := DijkstraAlgorithm{
-		graph:    pathAlgorithm.graph,
+		graphApi: pathAlgorithm.graphApi,
 	}
 
 	return algorithm.run(options)

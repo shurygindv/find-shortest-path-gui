@@ -5,6 +5,9 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+
+	"shortestpath/app/internal/graph"
+	"shortestpath/app/internal/ui"
 )
 
 func main() {
@@ -13,7 +16,11 @@ func main() {
 
 	os.Setenv("FYNE_SCALE", "1.3")
 
-	content := MainAppLayout() // main-app-layout.go
+	fileLines := ImportFilePointsByPath("data.txt")
+	graphApi := graph.InitializeGraphFromFileStrings(fileLines)
+
+	//
+	content := ui.MainAppLayout(graphApi)
 
 	window.CenterOnScreen()
 	window.Resize(fyne.NewSize(550, 370))
