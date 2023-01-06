@@ -11,16 +11,14 @@ import (
 )
 
 func main() {
+	os.Setenv("FYNE_SCALE", "1.3")
+
 	app := app.New()
 	window := app.NewWindow("Main window")
 
-	os.Setenv("FYNE_SCALE", "1.3")
+	graphApi := graph.CreateApi(ImportFilePointsByPath("data.txt"))
 
-	fileLines := ImportFilePointsByPath("data.txt")
-	graphApi := graph.InitializeGraphFromFileStrings(fileLines)
-
-	//
-	content := ui.MainAppLayout(graphApi)
+	content := ui.MainAppLayout(graphApi) // internal/ui/main-app-layout.go
 
 	window.CenterOnScreen()
 	window.Resize(fyne.NewSize(550, 370))

@@ -6,7 +6,7 @@ import (
 )
 
 type DijkstraAlgorithm struct {
-	graphApi GraphApi
+	graph Graph
 }
 
 const INFINITE = math.MaxInt64
@@ -45,7 +45,7 @@ func (dijkstraAlgorithm *DijkstraAlgorithm) extractShortestPathFor(
 func (algorithm *DijkstraAlgorithm) createInfiniteDistances() map[int]int {
 	distance := make(map[int]int)
 
-	for _, nodeId := range algorithm.graphApi.GetNodeIds() {
+	for _, nodeId := range algorithm.graph.GetNodeIds() {
 		distance[nodeId] = INFINITE
 	}
 
@@ -54,29 +54,28 @@ func (algorithm *DijkstraAlgorithm) createInfiniteDistances() map[int]int {
 
 // TODO: may rethink
 func (algorithm *DijkstraAlgorithm) run(data AlgorithmRunnerOptions) []int {
-	graphApi := algorithm.graphApi
+	graph := algorithm.graph
 	//
-	hasVisitedNodeId := make(map[int]bool)
-	shortestPathToAnyNode := make([]int, graphApi.GetNodesCount())
-	//
-	graphMatrix := graphApi.ConvertGraphTo2DArray()
+	graphMatrix := graph.ConvertTo2DArray()
 	distance := algorithm.createInfiniteDistances()
+	isReachedNodeId := make(map[int]bool)
+	shortestPathToAnyNode := make([]int, graph.GetNodesCount())
 	//
 	distance[data.sourceNodeId] = 0
 
 	currentNodeId := data.sourceNodeId
 
-	for !hasVisitedNodeId[currentNodeId] {
-		adjacentNodes := graphMatrix[currentNodeId]
+	for !isReachedNodeId[currentNodeId] {
+		neighbors := graphMatrix[currentNodeId]
 
-		for nodeId := range adjacentNodes {
-			adjacentNodeWeight := adjacentNodes[nodeId]
+		for nodeId := range neighbors {
+			neighborNodeWeight := neighbors[nodeId]
 
-			if hasVisitedNodeId[nodeId] || adjacentNodeWeight == 0 {
+			if isReachedNodeId[nodeId] || neighborNodeWeight == 0 {
 				continue
 			}
 
-			prevPlusNextDistance := distance[currentNodeId] + adjacentNodeWeight
+			prevPlusNextDistance := distance[currentNodeId] + neighborNodeWeight
 
 			if prevPlusNextDistance < distance[nodeId] {
 				distance[nodeId] = prevPlusNextDistance
@@ -85,11 +84,11 @@ func (algorithm *DijkstraAlgorithm) run(data AlgorithmRunnerOptions) []int {
 			}
 		}
 
-		hasVisitedNodeId[currentNodeId] = true
+		isReachedNodeId[currentNodeId] = true
 		minDistance := INFINITE
 
-		for nodeId := range adjacentNodes {
-			if hasVisitedNodeId[nodeId] || adjacentNodes[nodeId] == 0 {
+		for nodeId := range neighbors {
+			if isReachedNodeId[nodeId] || neighbors[nodeId] == 0 {
 				continue
 			}
 

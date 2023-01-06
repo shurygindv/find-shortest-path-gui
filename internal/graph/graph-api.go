@@ -8,16 +8,14 @@ type GraphApi struct {
 	Data Graph
 }
 
-func InitializeGraphFromFileStrings(fileLines []string) GraphApi {
-	graph := BuildGraph(fileLines)
-
+func CreateApi(fileLines []string) GraphApi {
 	return GraphApi{
-		Data: graph,
+		Data: BuildGraph(fileLines),
 	}
 }
 
 func (graphApi *GraphApi) FindShortestPath(sourceNodeId int, destinationNodeId int) []int {
-	algorithm := FindShortestPathAlgorithm{*graphApi}
+	algorithm := FindShortestPathAlgorithm{graphApi.Data}
 
 	return algorithm.run(AlgorithmRunnerOptions{
 		sourceNodeId,
@@ -26,13 +24,7 @@ func (graphApi *GraphApi) FindShortestPath(sourceNodeId int, destinationNodeId i
 }
 
 func (graphApi *GraphApi) GetNodesCount() int {
-	return len(graphApi.Data.Nodes)
-}
-
-func (graphApi *GraphApi) GetNodeIds() []int {
-	return utils.Map(graphApi.Data.Nodes, func(node Node) int {
-		return node.ID
-	})
+	return graphApi.Data.GetNodesCount()
 }
 
 func (graphApi *GraphApi) ConvertGraphTo2DArray() [][]int {
